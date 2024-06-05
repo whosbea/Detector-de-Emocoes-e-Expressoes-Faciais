@@ -3,43 +3,41 @@ from tkinter import filedialog, Label
 from deepface import DeepFace
 from PIL import Image, ImageTk
 
-def analyze_image():
-    
-    file_path = filedialog.askopenfilename() #Abre um diálogo para o usuário selecionar um arquivo de imagem.
+def analisar_imagem(result_label, img_label):
+    file_path = filedialog.askopenfilename() # Abre um diálogo para o usuário selecionar um arquivo de imagem.
     if not file_path:
         return
+    
+    analise = DeepFace.analyze(file_path, actions=['emotion'], enforce_detection=False) # Analisa a imagem para detectar emoções
 
-  
-    analysis = DeepFace.analyze(file_path, actions=['emotion'], enforce_detection=False) #Analisa a imagem para detectar emoções
-
-
-    if isinstance(analysis, list) and len(analysis) > 0: #Verifica se a análise retornou uma lista com resultados.
-        emotions = analysis[0]['emotion']
+    if isinstance(analise, list) and len(analise) > 0: # Verifica se a análise retornou uma lista com resultados.
+        emotions = analise[0]['emotion']
         result_text = "\n".join([f"{emotion}: {percentage:.2f}%" for emotion, percentage in emotions.items()])
     else:
         result_text = "No face detected or analysis failed."
 
-    result_label.config(text=result_text) #Atualiza o rótulo na interface com os resultados das emoções.
+    result_label.config(text=result_text) # Atualiza o rótulo na interface com os resultados das emoções.
 
+    img = Image.open(file_path) # Abre a imagem selecionada.
+    img = img.resize((250, 250)) # Redimensiona a imagem para um tamanho adequado.
+    img = ImageTk.PhotoImage(img) # Converte a imagem para um formato exibível pelo Tkinter.
+    img_label.config(image=img) # Atualiza o rótulo da imagem na interface.
+    img_label.image = img # Mantém a referência da imagem para evitar que ela seja coletada pelo garbage collector.
 
-    img = Image.open(file_path) #Abre a imagem selecionada.
-    img = img.resize((250, 250)) #Redimensiona a imagem para um tamanho adequado.
-    img = ImageTk.PhotoImage(img) #Converte a imagem para um formato exibível pelo Tkinter.
-    img_label.config(image=img) #Atualiza o rótulo da imagem na interface.
-    img_label.image = img #Mantém a referência da imagem para evitar que ela seja coletada pelo garbage collector.
+def configurar_interface():
+    root = tk.Tk()
+    root.title("Análise de Expressões Faciais")
 
+    analyze_button = tk.Button(root, text="Analisar Imagem", command=lambda: analisar_imagem(result_label, img_label)) # Cria um botão que chama a função
+    analyze_button.pack()
 
-#configuração da interface
-root = tk.Tk()
-root.title("Análise de Expressões Faciais")
+    img_label = Label(root)
+    img_label.pack()
 
-analyze_button = tk.Button(root, text="Analisar Imagem", command=analyze_image) #Cria um botão que chama a função 
-analyze_button.pack()
+    result_label = tk.Label(root, text="")
+    result_label.pack()
 
-img_label = Label(root)
-img_label.pack()
+    root.mainloop()
 
-result_label = tk.Label(root, text="")
-result_label.pack()
-
-root.mainloop()
+if __name__ == "__main__":
+    configurar_interface()
