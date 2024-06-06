@@ -3,6 +3,16 @@ from tkinter import filedialog, Label, Toplevel
 from deepface import DeepFace
 from PIL import Image, ImageTk
 
+# Dicionário com caminhos das imagens de cada emoção
+caminhos_imagens = {
+    'angry': "imgs/anger.png",
+    'disgust': "imgs/disgust.png",
+    'fear': "imgs/fear.png",
+    'happy': "imgs/joy.png",
+    'sad': "imgs/sadness.png",
+    'surprise': "imgs/surprise.png"
+}
+
 # Função para analisar a imagem do usuário
 def analisar_imagem(result_label, img_label):
     file_path = filedialog.askopenfilename()  # Abre um diálogo para o usuário selecionar um arquivo de imagem.
@@ -32,8 +42,7 @@ def abrir_janela_emocao(emocao):
     janela_emocao.configure(bg='lightblue')
 
     # Carregar e exibir a imagem da emoção
-    # img_path = f"imagens/{emocao}.jpg"  # Caminho da imagem correspondente à emoção
-    img_path = "C://Users//xbea3//Downloads//feliz.jpg"
+    img_path = caminhos_imagens.get(emocao)  # Pega o caminho da imagem correspondente à emoção
     img = Image.open(img_path)
     img = img.resize((250, 250))
     img = ImageTk.PhotoImage(img)
