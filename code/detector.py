@@ -27,7 +27,7 @@ def analisar_imagem(result_label, img_label, escolha_janela):
     analisando_label = Label(analisando_janela, text="Analisando imagem...", font=("Helvetica", 16), bg='lightblue')
     analisando_label.pack(pady=20)
 
-    root.update_idletasks()  # Atualiza a interface para exibir a janela de "Analisando Imagem"
+    root.update()  # Atualiza a interface para exibir a janela de "Analisando Imagem"
 
     analise = DeepFace.analyze(file_path, actions=['emotion'], enforce_detection=False)  # Analisa a imagem para detectar emoções
     analisando_janela.destroy()  # Fecha a janela de "Analisando Imagem"
