@@ -14,12 +14,28 @@ caminhos_imagens = {
 }
 
 # Função para analisar a imagem do usuário
-def analisar_imagem(result_label, img_label):
+def analisar_imagem(result_label, img_label, escolha_janela):
     file_path = filedialog.askopenfilename()  # Abre um diálogo para o usuário selecionar um arquivo de imagem.
+    escolha_janela.destroy()  # Fecha a janela de "Escolhendo Imagem"
     if not file_path:
         return
-    
+
+    # Exibir janela de "Analisando Imagem"
+    analisando_janela = Toplevel(root)
+    analisando_janela.title("Analisando Imagem")
+    analisando_janela.configure(bg='lightblue')
+    analisando_label = Label(analisando_janela, text="Analisando imagem...", font=("Helvetica", 16), bg='lightblue')
+    analisando_label.pack(pady=20)
+
+    root.update_idletasks()  # Atualiza a interface para exibir a janela de "Analisando Imagem"
+
     analise = DeepFace.analyze(file_path, actions=['emotion'], enforce_detection=False)  # Analisa a imagem para detectar emoções
+    analisando_janela.destroy()  # Fecha a janela de "Analisando Imagem"
+
+    # Exibir resultados
+    resultado_janela = Toplevel(root)
+    resultado_janela.title("Resultado da Análise")
+    resultado_janela.configure(bg='lightblue')
 
     if isinstance(analise, list) and len(analise) > 0:  # Verifica se a análise retornou uma lista com resultados.
         emotions = analise[0]['emotion']
@@ -27,13 +43,15 @@ def analisar_imagem(result_label, img_label):
     else:
         result_text = "No face detected or analysis failed."
 
-    result_label.config(text=result_text)  # Atualiza o rótulo na interface com os resultados das emoções.
+    result_label = Label(resultado_janela, text=result_text, font=("Helvetica", 12), bg='lightblue')
+    result_label.pack(pady=10)
 
     img = Image.open(file_path)  # Abre a imagem selecionada.
     img = img.resize((250, 250))  # Redimensiona a imagem para um tamanho adequado.
     img = ImageTk.PhotoImage(img)  # Converte a imagem para um formato exibível pelo Tkinter.
-    img_label.config(image=img)  # Atualiza o rótulo da imagem na interface.
+    img_label = Label(resultado_janela, image=img)  # Cria um rótulo de imagem
     img_label.image = img  # Mantém a referência da imagem para evitar que ela seja coletada pelo garbage collector.
+    img_label.pack(pady=10)
 
 # Função para abrir a janela específica da emoção
 def abrir_janela_emocao(emocao):
@@ -68,7 +86,7 @@ def abrir_janela_emocao(emocao):
     result_label = Label(janela_emocao, text="", font=("Helvetica", 12), bg='lightblue')
     result_label.pack(pady=10)
 
-    galeria_button = tk.Button(janela_emocao, text="Sua Galeria", command=lambda: analisar_imagem(result_label, img_label), bg='blue', fg='white', font=("Helvetica", 12))
+    galeria_button = tk.Button(janela_emocao, text="Sua Galeria", command=lambda: analisar_imagem(result_label, img_label, janela_emocao), bg='blue', fg='white', font=("Helvetica", 12))
     galeria_button.pack(pady=10)
 
     result_label.pack(pady=10)
@@ -85,14 +103,38 @@ def abrir_emocoes():
     # Criar botões para cada emoção
     emocoes = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise']
     for i, emocao in enumerate(emocoes):
-        criar_botao_emocao(emocao, row=2 + i // 3, col=i % 3)
+        criar_botao_emocao(emocao, row=i // 3, col=i % 3)
 
-# Função para abrir a janela de descobrir (em construção)
+# Função para abrir a janela de descobrir
 def abrir_descobrir():
     descobrir_janela = Toplevel(root)
     descobrir_janela.title("Descobrir")
-    # Adicione aqui os widgets e a lógica para a funcionalidade "Descobrir"
-    Label(descobrir_janela, text="Funcionalidade 'Descobrir' em construção", font=("Helvetica", 12)).pack(pady=10)
+    descobrir_janela.configure(bg='lightblue')
+
+    # Label e imagem para a análise de imagem
+    result_label = Label(descobrir_janela, text="", font=("Helvetica", 12), bg='lightblue')
+    result_label.pack(pady=10)
+    img_label = Label(descobrir_janela)
+    img_label.pack(pady=10)
+
+    # Botão para abrir a câmera (em construção)
+    camera_button = tk.Button(descobrir_janela, text="📷", font=("Helvetica", 24), bg='yellow', fg='black')
+    camera_button.pack(pady=20)
+
+    # Botão para analisar uma imagem da galeria
+    analisar_button = tk.Button(descobrir_janela, text="Analisar Imagem", command=lambda: abrir_escolher_imagem(), bg='orange', fg='white', font=("Helvetica", 12))
+    analisar_button.pack(pady=20)
+
+# Função para abrir a janela de escolher imagem
+def abrir_escolher_imagem():
+    escolha_janela = Toplevel(root)
+    escolha_janela.title("Escolhendo Imagem")
+    escolha_janela.configure(bg='lightblue')
+    escolha_label = Label(escolha_janela, text="Escolhendo imagem...", font=("Helvetica", 16), bg='lightblue')
+    escolha_label.pack(pady=20)
+
+    # Chama a função de análise de imagem após a seleção do arquivo
+    root.after(100, lambda: analisar_imagem(Label(escolha_janela), Label(escolha_janela), escolha_janela))
 
 # Função para configurar a interface principal
 def configurar_interface():
