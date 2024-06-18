@@ -141,9 +141,6 @@ def abrir_janela_emocao(emocao):
     result_label = Label(janela_emocao, text="", font=("Helvetica", 12), bg='lightblue')
     result_label.pack(pady=10)
 
-    galeria_button = tk.Button(janela_emocao, text="Sua Galeria", command=lambda: analisar_imagem(result_label, img_label, janela_emocao), bg='blue', fg='white', font=("Helvetica", 12))
-    galeria_button.pack(pady=10)
-
     result_label.pack(pady=10)
 
 # Função para abrir a janela de emoções
