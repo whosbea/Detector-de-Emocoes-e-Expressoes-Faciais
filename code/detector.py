@@ -54,57 +54,59 @@ def analisar_imagem(result_label, img_label, escolha_janela):
     img_label.image = img  # Mantém a referência da imagem para evitar que ela seja coletada pelo garbage collector.
     img_label.pack(pady=10)
 
-# Função para capturar e analisar imagem da webcam
-def analisar_webcam():
+
+# Função para detectar expressão facial dominante em um quadro
+def detect_face_expression(frame):
+    try:
+        result = DeepFace.analyze(frame, actions=['emotion'])
+        dominant_expression = max(result[0]['emotion'].items(), key=lambda x: x[1])
+        return dominant_expression[0], result[0]['region']
+    except Exception as e:
+        print("Erro ao detectar rosto:", e)
+        return None, None
+
+# Função para análise em tempo real usando webcam
+def analisar_webcam_tempo_real():
     cap = cv2.VideoCapture(0)
-    
+
     if not cap.isOpened():
         print("Erro: Não foi possível abrir a webcam.")
         return
 
-    ret, frame = cap.read()
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        # Redimensionamento do frame para acelerar o processo de análise
+        frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
+
+        # Detecção da expressão facial dominante no frame
+        expression, region = detect_face_expression(frame)
+
+        # Se nenhuma expressão for detectada, continue para o próximo quadro
+        if expression is None:
+            continue
+
+        # Exibição da expressão facial dominante no console
+        print("Expressão Facial Dominante:", expression)
+
+        # Desenhar um retângulo ao redor do rosto detectado
+        if region:
+            x, y, w, h = region['x'], region['y'], region['w'], region['h']
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+            cv2.putText(frame, expression, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 128, 255), 1)
+
+        # Exibição do frame com a expressão facial destacada
+        cv2.imshow('Facial Expression Recognition', frame)
+
+        # Verificação da tecla 'q' para sair do loop
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    # Liberação da webcam e fechamento das janelas
     cap.release()
-
-    if not ret:
-        print("Erro: Não foi possível capturar uma imagem da webcam.")
-        return
-
-    # Salvar a imagem capturada
-    file_path = "webcam_image.jpg"
-    cv2.imwrite(file_path, frame)
-
-    # Exibir janela de "Analisando Imagem"
-    analisando_janela = Toplevel(root)
-    analisando_janela.title("Analisando Imagem")
-    analisando_janela.configure(bg='lightblue')
-    analisando_label = Label(analisando_janela, text="Analisando imagem...", font=("Helvetica", 16), bg='lightblue')
-    analisando_label.pack(pady=20)
-
-    root.update()  # Atualiza a interface para exibir a janela de "Analisando Imagem"
-
-    analise = DeepFace.analyze(file_path, actions=['emotion'], enforce_detection=False)  # Analisa a imagem para detectar emoções
-    analisando_janela.destroy()  # Fecha a janela de "Analisando Imagem"
-
-    # Exibir resultados
-    resultado_janela = Toplevel(root)
-    resultado_janela.title("Resultado da Análise")
-    resultado_janela.configure(bg='lightblue')
-
-    if isinstance(analise, list) and len(analise) > 0:  # Verifica se a análise retornou uma lista com resultados.
-        emotions = analise[0]['emotion']
-        result_text = "\n".join([f"{emotion}: {percentage:.2f}%" for emotion, percentage in emotions.items()])
-    else:
-        result_text = "No face detected or analysis failed."
-
-    result_label = Label(resultado_janela, text=result_text, font=("Helvetica", 12), bg='lightblue')
-    result_label.pack(pady=10)
-
-    img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-    img = img.resize((250, 250))  # Redimensiona a imagem para um tamanho adequado.
-    img = ImageTk.PhotoImage(img)  # Converte a imagem para um formato exibível pelo Tkinter.
-    img_label = Label(resultado_janela, image=img)  # Cria um rótulo de imagem
-    img_label.image = img  # Mantém a referência da imagem para evitar que ela seja coletada pelo garbage collector.
-    img_label.pack(pady=10)
+    cv2.destroyAllWindows()
 
 # Função para abrir a janela específica da emoção
 def abrir_janela_emocao(emocao):
@@ -167,7 +169,7 @@ def abrir_descobrir():
     analyze_button = tk.Button(descobrir_janela, text="Analisar Imagem", command=lambda: abrir_chooser_window(descobrir_janela), bg='blue', fg='white', font=("Helvetica", 12))
     analyze_button.pack(pady=20)
 
-    camera_button = tk.Button(descobrir_janela, text="Camera", command=analisar_webcam, bg='blue', fg='white', font=("Helvetica", 12))
+    camera_button = tk.Button(descobrir_janela, text="Camera", command=analisar_webcam_tempo_real, bg='blue', fg='white', font=("Helvetica", 12))
     camera_button.pack(pady=20)
 
 def abrir_chooser_window(parent_window):
