@@ -16,7 +16,9 @@
 <p align="center"> 
   <a href="#objetivo-principal">Objetivo Principal</a> •
   <a href="#bibliotecas">Bibliotecas</a> •
-  <a href="#download">Download</a>
+  <a href="#download">Download</a> •
+  <a href="#biblioteca">Biblioteca</a> •
+  <a href="#artigos">Artigos</a>
 </p>
 
 ## Objetivo Principal
