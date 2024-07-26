@@ -61,6 +61,13 @@ pip install opencv-python
 ```bash
 python detector.py
 ```
+
+## Biblioteca
+Nesta seção, contém artigos, livros e teses que inspiraram e contribuíram para o desenvolvimento deste estudo.
+
+## Artigos
+Aqui você encontrará o artigo científico desenvolvido em paralelo com a criação desta aplicação.
+
 <br>
 <i>
 <!-- Edite esse campo com suas redes sociais e formas de contato! -->
