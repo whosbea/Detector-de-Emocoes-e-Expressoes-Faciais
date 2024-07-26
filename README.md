@@ -16,8 +16,7 @@
 <p align="center"> 
   <a href="#objetivo-principal">Objetivo Principal</a> •
   <a href="#bibliotecas">Bibliotecas</a> •
-  <a href="#download">Download</a> •
-  <a href="#colaboradores">Colaboradores</a>
+  <a href="#download">Download</a>
 </p>
 
 ## Objetivo Principal
@@ -62,12 +61,6 @@ pip install opencv-python
 ```bash
 python detector.py
 ```
-
-## Colaboradores
-<h3 align="center">
-<a href="https://github.com/whosbea/pesquisa-ia-e-autismo/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=whosbea/pesquisa-ia-e-autismo"/>
-</a>
 <br>
 <i>
 <!-- Edite esse campo com suas redes sociais e formas de contato! -->
