@@ -6,10 +6,10 @@ import cv2
 
 # Dicionário com caminhos das imagens de cada emoção
 caminhos_imagens = {
-    'angry': "imgs/mulher raivosa.jpg",
+    'angry': "imgs/anger.png",
     'disgust': "imgs/disgust.png",
     'fear': "imgs/fear.png",
-    'happy': "imgs/veia feliz.jpg",
+    'happy': "imgs/joy.png",
     'sad': "imgs/sadness.png",
     'surprise': "imgs/surprise.png"
 }
