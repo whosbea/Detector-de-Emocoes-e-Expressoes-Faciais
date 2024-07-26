@@ -6,10 +6,10 @@ import cv2
 
 # Dicionário com caminhos das imagens de cada emoção
 caminhos_imagens = {
-    'angry': "imgs/anger.png",
+    'angry': "imgs/mulher raivosa.jpg",
     'disgust': "imgs/disgust.png",
     'fear': "imgs/fear.png",
-    'happy': "imgs/joy.png",
+    'happy': "imgs/veia feliz.jpg",
     'sad': "imgs/sadness.png",
     'surprise': "imgs/surprise.png"
 }
@@ -113,6 +113,7 @@ def abrir_janela_emocao(emocao):
     janela_emocao = Toplevel(root)
     janela_emocao.title(emocao.capitalize())
     janela_emocao.configure(bg='lightblue')
+    janela_emocao.geometry("500x500")
 
     # Carregar e exibir a imagem da emoção
     img_path = caminhos_imagens.get(emocao)  # Pega o caminho da imagem correspondente à emoção
@@ -148,6 +149,7 @@ def abrir_emocoes():
     emocoes_janela = Toplevel(root)
     emocoes_janela.title("Análise de Emoções")
     emocoes_janela.configure(bg='lightblue')
+    emocoes_janela.geometry("500x500")
 
     def criar_botao_emocao(emocao, row, col):
         return tk.Button(emocoes_janela, text=emocao.capitalize(), command=lambda: abrir_janela_emocao(emocao), bg='blue', fg='white', font=("Helvetica", 12)).grid(row=row, column=col, padx=10, pady=5)
@@ -162,6 +164,7 @@ def abrir_descobrir():
     descobrir_janela = Toplevel(root)
     descobrir_janela.title("Descobrir")
     descobrir_janela.configure(bg='lightblue')
+    descobrir_janela.geometry("500x500")
 
     analyze_button = tk.Button(descobrir_janela, text="Analisar Imagem", command=lambda: abrir_chooser_window(descobrir_janela), bg='blue', fg='white', font=("Helvetica", 12))
     analyze_button.pack(pady=20)
@@ -177,6 +180,7 @@ def abrir_chooser_window(parent_window):
     escolha_janela = Toplevel(root)
     escolha_janela.title("Escolhendo Imagem")
     escolha_janela.configure(bg='lightblue')
+    escolha_janela.geometry("500x500")
     escolha_label = Label(escolha_janela, text="Escolhendo imagem...", font=("Helvetica", 16), bg='lightblue')
     escolha_label.pack(pady=20)
 
@@ -187,6 +191,7 @@ if __name__ == "__main__":
     root = tk.Tk()
     root.title("Aplicativo de Emoções")
     root.configure(bg='lightblue')
+    root.geometry("500x500")
 
     emocoes_button = tk.Button(root, text="Emoções", command=abrir_emocoes, bg='blue', fg='white', font=("Helvetica", 14))
     emocoes_button.pack(pady=20)
